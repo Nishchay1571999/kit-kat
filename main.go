@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	utils.ClearScreen()
+	utils.EditorClearScreen()
 	terminal.EnableRawMode()
 	defer terminal.RestoreState()
 

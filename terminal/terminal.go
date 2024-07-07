@@ -2,8 +2,11 @@
 package terminal
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/Nishchay1571999/kit-kat/config"
+	"github.com/Nishchay1571999/kit-kat/types"
 	"github.com/Nishchay1571999/kit-kat/utils"
 	"golang.org/x/term"
 )
@@ -30,9 +33,21 @@ func RestoreState() {
 		term.Restore(int(os.Stdin.Fd()), originalState)
 	}
 }
+func MoveCursorTo() {
+	// ANSI escape sequence to move cursor
+	// Move cursor to position (x, y)
+	fmt.Printf("\033[%d;%dH", config.Cursor.Y, config.Cursor.X)
+}
+func NextLine() {
+	nextPos := types.CursorPos{
+		X: config.Cursor.X + 1,
+		Y: 0,
+	}
+	config.SetCursorPosition(nextPos)
+}
 
-// ChangeMode checks if the input buffer signals a mode change
-func ChangeMode(buffer []byte) bool {
+// EditorShouldQuit checks if the input buffer signals a mode change
+func EditorShouldQuit(buffer []byte) bool {
 	// Implement your logic for mode change detection here
-	return false
+	return buffer[0] == 3
 }
