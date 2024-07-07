@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Nishchay1571999/kit-kat/config"
 	"github.com/Nishchay1571999/kit-kat/terminal"
 	"github.com/Nishchay1571999/kit-kat/utils"
 )
@@ -12,15 +13,16 @@ import (
 // ReadInputLoop handles reading input and processing it
 func ReadInputLoop() {
 	utils.EditorAddRows()
-	var buffer = make([]byte, 1)
+	terminal.MoveCursorTo()
+	var buffer = make([]byte, config.TerminalWidth)
 	for {
 		n, err := os.Stdin.Read(buffer)
-		HandleBuffer(buffer, n)
 		if err != nil || n == 0 {
 			utils.EditorClearScreen()
 			fmt.Println(err)
 			utils.Die("Error while taking Input")
 		}
+		HandleBuffer(buffer, n)
 	}
 }
 
@@ -32,17 +34,25 @@ TODO:
 */
 
 func HandleBuffer(buffer []byte, n int) {
-	terminal.MoveCursorTo()
+	for i := 0; i < n; i++ {
+		switch buffer[i] {
+		case '\n':
+			terminal.NextLine()
+		case '\r':
+			// Handle \r in case of Windows-style line endings (\r\n)
+			if i+1 < n && buffer[i+1] == '\n' {
+				terminal.NextLine()
+				i++ // Skip the next \n
+			} else {
+				terminal.NextLine()
+			}
+		default:
+			fmt.Print(string(buffer[i]))
+		}
+	}
+
 	if terminal.EditorShouldQuit(buffer) {
 		utils.EditorClearScreen()
 		utils.Die("Quitting Kit Kat")
-	} else {
-		switch string(buffer[:n]) {
-		case "\n":
-			terminal.NextLine()
-		default:
-			fmt.Print(string(buffer[:n]))
-
-		}
 	}
 }

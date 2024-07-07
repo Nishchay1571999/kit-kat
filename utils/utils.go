@@ -29,9 +29,9 @@ func EditorAddRows() {
 	fd := int(os.Stdout.Fd())
 
 	// Retrieve the terminal size
-	_, height, err := terminal.GetSize(fd)
+	width, height, err := terminal.GetSize(fd)
 	fmt.Println(err)
-	config.SetTerminalHeight(height)
+	config.SetTerminalHeight(height, width)
 	if err != nil {
 		Die("Could not find your Terminal")
 	}

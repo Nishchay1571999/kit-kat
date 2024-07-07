@@ -36,14 +36,15 @@ func RestoreState() {
 func MoveCursorTo() {
 	// ANSI escape sequence to move cursor
 	// Move cursor to position (x, y)
-	fmt.Printf("\033[%d;%dH", config.Cursor.Y, config.Cursor.X)
+	fmt.Printf("\033[%d;%dH", config.Cursor.Y+1, config.Cursor.X+1) // Adding 1 because ANSI escape codes are 1-based
 }
 func NextLine() {
 	nextPos := types.CursorPos{
-		X: config.Cursor.X + 1,
-		Y: 0,
+		X: 0,
+		Y: config.Cursor.Y + 1,
 	}
 	config.SetCursorPosition(nextPos)
+	MoveCursorTo()
 }
 
 // EditorShouldQuit checks if the input buffer signals a mode change
